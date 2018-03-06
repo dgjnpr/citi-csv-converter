@@ -14,16 +14,23 @@ func main() {
 	}
 	defer inFile.Close()
 
-	data := csv.NewReader(inFile)
+	output := YnabParser(inFile)
 
 	w := csv.NewWriter(os.Stdout)
+	w.WriteAll(output)
 
-	headers, err := data.Read()
-	if err != nil {
-		log.Fatal(err)
+	if err = w.Error(); err != nil {
+		log.Fatalln("error writing csv:", err)
 	}
-	w.Write(headers[0:])
-	w.Write([]string{"Date", "Payee", "Category", "Memo", "Outflow", "Inflow"})
+}
+
+// YnabParser blah blah blah
+func YnabParser(r io.Reader) [][]string {
+	data := csv.NewReader(r)
+	var output [][]string
+
+	data.Read()
+	output = append(output, []string{"Date", "Payee", "Category", "Memo", "Outflow", "Inflow"})
 
 	for {
 		record, err := data.Read()
@@ -33,8 +40,8 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		w.Write([]string{record[2], record[5], "Job Expense", "", record[6], ""})
+		output = append(output, []string{record[2], record[5], "Job Expense", "", record[6], ""})
 	}
 
-	w.Flush()
+	return output
 }
