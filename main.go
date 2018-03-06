@@ -26,20 +26,19 @@ func main() {
 
 // YnabParser blah blah blah
 func YnabParser(r io.Reader) [][]string {
-	data := csv.NewReader(r)
 	var output [][]string
-
-	data.Read()
 	output = append(output, []string{"Date", "Payee", "Category", "Memo", "Outflow", "Inflow"})
 
-	for {
-		record, err := data.Read()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			log.Fatal(err)
-		}
+	data := csv.NewReader(r)
+	// pop the headers from Citi
+	data.Read()
+
+	records, err := data.ReadAll()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, record := range records {
 		output = append(output, []string{record[2], record[5], "Job Expense", "", record[6], ""})
 	}
 
