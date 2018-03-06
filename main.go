@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"strings"
 )
 
 func main() {
@@ -14,7 +15,10 @@ func main() {
 	}
 	defer data.Close()
 
-	output := YnabParser(data)
+	output, err := YnabParser(data)
+	if err != nil {
+		log.Fatalf("couldn't parse csv file: %v", err)
+	}
 
 	w := csv.NewWriter(os.Stdout)
 	w.WriteAll(output)
@@ -25,22 +29,27 @@ func main() {
 }
 
 // YnabParser blah blah blah
-func YnabParser(r io.Reader) [][]string {
+func YnabParser(r io.Reader) ([][]string, error) {
 	var output [][]string
 	output = append(output, []string{"Date", "Payee", "Category", "Memo", "Outflow", "Inflow"})
 
 	data := csv.NewReader(r)
-	// pop the headers from Citi
-	data.Read()
 
 	records, err := data.ReadAll()
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
-	for _, record := range records {
-		output = append(output, []string{record[2], record[5], "Job Expense", "", record[6], ""})
+	// read all but the first line (which contain Citi headers)
+	for _, r := range records[1:] {
+		switch strings.Contains(r[6], "-") {
+		case true:
+			inflow := r[6][2:]
+			output = append(output, []string{r[2], r[5], "Job Expense", "", "", inflow})
+		default:
+			output = append(output, []string{r[2], r[5], "Job Expense", "", r[6], ""})
+		}
 	}
 
-	return output
+	return output, nil
 }
