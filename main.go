@@ -8,13 +8,13 @@ import (
 )
 
 func main() {
-	inFile, err := os.Open("/Users/dgethings/Downloads/Statement.csv")
+	data, err := os.Open(os.Args[1])
 	if err != nil {
 		log.Fatalf("cannot read csv: %v", err)
 	}
-	defer inFile.Close()
+	defer data.Close()
 
-	output := YnabParser(inFile)
+	output := YnabParser(data)
 
 	w := csv.NewWriter(os.Stdout)
 	w.WriteAll(output)
