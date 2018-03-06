@@ -23,7 +23,7 @@ func main() {
 		log.Fatal(err)
 	}
 	w.Write(headers[0:])
-	w.Write([]string{headers[2], headers[6]})
+	w.Write([]string{"Date", "Payee", "Category", "Memo", "Outflow", "Inflow"})
 
 	for {
 		record, err := data.Read()
@@ -33,7 +33,7 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		w.Write([]string{record[2], record[6]})
+		w.Write([]string{record[2], record[5], "Job Expense", "", record[6], ""})
 	}
 
 	w.Flush()
