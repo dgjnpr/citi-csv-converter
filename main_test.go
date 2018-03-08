@@ -31,9 +31,15 @@ func TestYnabParser(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name:    "a test",
-			args:    args{strings.NewReader("\"Account Number\",\"Account Name\",\"Transaction Date\",\"Post Date\",\"Reference Number\",\"Transaction Detail\",\"Billing Amount\",\"Source Currency\",\"Source Amount\",\"Customer Ref\",\"Employee Number\"\n\"XXXXXXXXXX\",\"Foo\",\"01/01/2018\",\"02/01/2018\",\"12345\",\"my company\",\" -1,000\",\"GBP\",\" -1,000\",,\"98765\"\n\"XXXXXXXXXX\",\"Foo\",\"02/01/2018\",\"03/01/2018\",\"23456\",\"a shop\",\"10.00\",\"GBP\",\"10.00\",,\"98765\"")},
-			want:    [][]string{{"Date", "Payee", "Category", "Memo", "Outflow", "Inflow"}, {"01/01/2018", "my company", "Job Expense", "", "", "1,000"}, {"02/01/2018", "a shop", "Job Expense", "", "10.00", ""}},
+			name: "a test",
+			args: args{strings.NewReader(`"Account Number","Account Name","Transaction Date","Post Date","Reference Number","Transaction Detail","Billing Amount","Source Currency","Source Amount","Customer Ref","Employee Number"
+"XXXXXXXXXX","Foo","01/01/2018","02/01/2018","12345","my company"," -1,000","GBP"," -1,000",,"98765"
+"XXXXXXXXXX","Foo","02/01/2018","03/01/2018","23456","a shop","10.00","GBP","10.00",,"98765"`)},
+			want: [][]string{
+				{"Date", "Payee", "Category", "Memo", "Outflow", "Inflow"},
+				{"01/01/2018", "my company", "Job Expense", "", "", "1,000"},
+				{"02/01/2018", "a shop", "Job Expense", "", "10.00", ""},
+			},
 			wantErr: false,
 		},
 	}
