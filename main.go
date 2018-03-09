@@ -35,13 +35,13 @@ func YnabParser(r io.Reader) ([][]string, error) {
 
 	data := csv.NewReader(r)
 
-	records, err := data.ReadAll()
+	rows, err := data.ReadAll()
 	if err != nil {
 		return nil, err
 	}
 
 	// read all but the first line (which contain Citi headers)
-	for _, r := range records[1:] {
+	for _, r := range rows[1:] {
 		switch strings.Contains(r[6], "-") {
 		case true:
 			inflow := r[6][2:]

@@ -31,7 +31,7 @@ func TestYnabParser(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "a test",
+			name: "inflow and outflow in one statement",
 			args: args{strings.NewReader(`"Account Number","Account Name","Transaction Date","Post Date","Reference Number","Transaction Detail","Billing Amount","Source Currency","Source Amount","Customer Ref","Employee Number"
 "XXXXXXXXXX","Foo","01/01/2018","02/01/2018","12345","my company"," -1,000","GBP"," -1,000",,"98765"
 "XXXXXXXXXX","Foo","02/01/2018","03/01/2018","23456","a shop","10.00","GBP","10.00",,"98765"`)},
