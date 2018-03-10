@@ -53,7 +53,8 @@ func main() {
 	}
 }
 
-// YnabParser blah blah blah
+// YnabParser takes an io.Reader and return YNAB formatted CSV
+// https://classic.youneedabudget.com/support/article/csv-file-importing
 func YnabParser(r io.Reader) ([][]string, error) {
 	var output [][]string
 	output = append(output, []string{"Date", "Payee", "Category", "Memo", "Outflow", "Inflow"})
