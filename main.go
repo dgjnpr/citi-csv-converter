@@ -8,6 +8,31 @@ import (
 	"strings"
 )
 
+const (
+	// AccountNumber is the redacted CCard number
+	AccountNumber = iota
+	// AccountName is the CCard holder name
+	AccountName
+	// TransactionDate is the date the transaction took place
+	TransactionDate
+	// PostDate is the date the transaction cleared
+	PostDate
+	// ReferenceNumber is a transaction ID
+	ReferenceNumber
+	// TransactionDetail usually contains vendor name and location
+	TransactionDetail
+	// BillingAmount is the transaction amount in the CCard local currency
+	BillingAmount
+	// SourceCurrency is a three letter currency ID
+	SourceCurrency
+	// SourceAmount is the transaction amount in SourceCurrency
+	SourceAmount
+	// CustomerRef so far has been an empty field
+	CustomerRef
+	// EmployeeID is a 9 digit number. For US employees it's their SSN
+	EmployeeID
+)
+
 func main() {
 	data, err := os.Open(os.Args[1])
 	if err != nil {
@@ -44,10 +69,10 @@ func YnabParser(r io.Reader) ([][]string, error) {
 	for _, r := range rows[1:] {
 		switch strings.Contains(r[6], "-") {
 		case true:
-			inflow := r[6][2:]
-			output = append(output, []string{r[2], r[5], "Job Expense", "", "", inflow})
+			inflow := r[BillingAmount][2:]
+			output = append(output, []string{r[TransactionDate], r[TransactionDetail], "Job Expense", "", "", inflow})
 		default:
-			output = append(output, []string{r[2], r[5], "Job Expense", "", r[6], ""})
+			output = append(output, []string{r[TransactionDate], r[TransactionDetail], "Job Expense", "", r[BillingAmount], ""})
 		}
 	}
 
