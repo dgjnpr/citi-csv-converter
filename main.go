@@ -40,24 +40,23 @@ func main() {
 	}
 	defer data.Close()
 
-	output, err := YnabParser(data)
+	citi, err := CitiIngest(data)
 	if err != nil {
 		log.Fatalf("couldn't parse csv file: %v", err)
 	}
 
+	ynab := ToYnab(citi)
+
 	w := csv.NewWriter(os.Stdout)
-	w.WriteAll(output)
+	w.WriteAll(ynab)
 
 	if err = w.Error(); err != nil {
 		log.Fatalln("error writing csv:", err)
 	}
 }
 
-// YnabParser blah blah blah
-func YnabParser(r io.Reader) ([][]string, error) {
-	var output [][]string
-	output = append(output, []string{"Date", "Payee", "Category", "Memo", "Outflow", "Inflow"})
-
+// CitiIngest reads the Citi formated CSV file
+func CitiIngest(r io.Reader) ([][]string, error) {
 	data := csv.NewReader(r)
 
 	rows, err := data.ReadAll()
@@ -65,16 +64,30 @@ func YnabParser(r io.Reader) ([][]string, error) {
 		return nil, err
 	}
 
+	return rows, nil
+}
+
+// YnabHeaders is the header format for YNAB CSV file format
+var YnabHeaders = []string{"Date", "Payee", "Category", "Memo", "Outflow", "Inflow"}
+
+// ToYnab blah blah blah
+func ToYnab(citi [][]string) [][]string {
+	citi[0] = YnabHeaders
+
 	// read all but the first line (which contain Citi headers)
-	for _, r := range rows[1:] {
-		switch strings.Contains(r[6], "-") {
+	for i, r := range citi[1:] {
+		_inflow := ""
+		_outflow := ""
+
+		switch strings.Contains(r[BillingAmount], "-") {
 		case true:
-			inflow := r[BillingAmount][2:]
-			output = append(output, []string{r[TransactionDate], r[TransactionDetail], "Job Expense", "", "", inflow})
+			_inflow = r[BillingAmount][2:]
 		default:
-			output = append(output, []string{r[TransactionDate], r[TransactionDetail], "Job Expense", "", r[BillingAmount], ""})
+			_outflow = r[BillingAmount]
 		}
+		citi[i+1] = []string{r[TransactionDate], r[TransactionDetail], "Job Expense", "", _outflow, _inflow}
+
 	}
 
-	return output, nil
+	return citi
 }

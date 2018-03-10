@@ -45,13 +45,72 @@ func TestYnabParser(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := YnabParser(tt.args.r)
+			got, err := ToYnab(tt.args.r)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("YnabParser() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("YnabParser() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_main(t *testing.T) {
+	tests := []struct {
+		name string
+	}{
+		// TODO: Add test cases.
+	}
+	for range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			main()
+		})
+	}
+}
+
+func TestCitiIngest(t *testing.T) {
+	type args struct {
+		r io.Reader
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    [][]string
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := CitiIngest(tt.args.r)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("CitiIngest() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("CitiIngest() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestToYnab(t *testing.T) {
+	type args struct {
+		citi [][]string
+	}
+	tests := []struct {
+		name string
+		args args
+		want [][]string
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := ToYnab(tt.args.citi); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("ToYnab() = %v, want %v", got, tt.want)
 			}
 		})
 	}
