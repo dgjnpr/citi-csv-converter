@@ -67,7 +67,7 @@ func YnabParser(r io.Reader) ([][]string, error) {
 
 	// read all but the first line (which contain Citi headers)
 	for _, r := range rows[1:] {
-		switch strings.Contains(r[6], "-") {
+		switch strings.Contains(r[BillingAmount], "-") {
 		case true:
 			inflow := r[BillingAmount][2:]
 			output = append(output, []string{r[TransactionDate], r[TransactionDetail], "Job Expense", "", "", inflow})
