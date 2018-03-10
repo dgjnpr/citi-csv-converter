@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	cc "github.com/dgjnpr/citi-csv-converter/csvconverter"
+	cc "github.com/dgjnpr/citi-csv-converter/citiconverter"
 )
 
 func TestCitiIngest(t *testing.T) {
@@ -33,7 +33,7 @@ func TestCitiIngest(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := cc.CsvIngest(tt.args.r)
+			got, err := cc.CitiIngest(tt.args.r)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("CitiIngest() error = %v, wantErr %v", err, tt.wantErr)
 				return
