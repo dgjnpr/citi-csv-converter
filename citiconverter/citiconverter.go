@@ -35,9 +35,7 @@ const (
 // probably should validate this data, but the only thing we care about is the
 // column order. I doubt that will change much
 func CitiIngest(r io.Reader) (*[][]string, error) {
-	data := csv.NewReader(r)
-
-	rows, err := data.ReadAll()
+	rows, err := csv.NewReader(r).ReadAll()
 	if err != nil {
 		return nil, err
 	}
